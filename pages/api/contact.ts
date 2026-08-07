@@ -55,7 +55,7 @@ export default async function handler(
     const params = {
       Source: "tpg3@njit.edu", // Your verified email in SES
       Destination: {
-        ToAddresses: ["tpg3@njit.edu"], // Your email address
+        ToAddresses: ["thomasgonz67@gmail.com"], // Your email address
       },
       ReplyToAddresses: [email],
       Message: {
