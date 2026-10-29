@@ -5,6 +5,7 @@ import Footer from "../Components/Footer";
 import type { InferGetStaticPropsType, GetStaticProps } from 'next';
 import React, { useState } from 'react';
 import { fetchData } from "../lib/strapi";
+import fallbackProjects from "../data/projects-fallback.json";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,11 +37,18 @@ type HomeProps = {
 };
 
 export async function getStaticProps() {
-  const json = await fetchData("/api/projects?populate=image&sort=publishedAt:desc");
-  console.log(json.data);
+  let projects: Project[];
+  try {
+    const json = await fetchData("/api/projects?populate=image&sort=publishedAt:desc");
+    projects = json.data;
+  } catch (error) {
+    // Strapi is unreachable (e.g. the CMS is down): keep the site building with the last known projects
+    console.error('Error fetching projects, using fallback:', error);
+    projects = fallbackProjects as unknown as Project[];
+  }
   return {
     props: {
-      projects: json.data,
+      projects,
     },
     revalidate: 30,
   };
